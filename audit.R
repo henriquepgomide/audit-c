@@ -94,7 +94,6 @@ round(m84$byClass[1:2],2)
 m85  <- confusionMatrix(auditdf$c6, auditdf$a8, positive = "Positive")
 round(m85$byClass[1:2],2)
 
-m73
 
 # ROC ----
 roc(response = auditdf$a7, predictor = auditdf$pred, partial.auc = c(10, 0), partial.auc.correct = TRUE, percent = TRUE, plot = TRUE)
