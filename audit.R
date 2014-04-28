@@ -163,5 +163,9 @@ table(auditdf$sexo)
 # age
 auditdf$idade[auditdf$idade < 18 ] <- NA
 summary(auditdf$idade)
-boxplot(auditdf$idade)
-table(auditdf$idade)
+boxplot(idade ~ sexo , data = auditdf)
+table(auditdf$)
+bwplot(idade ~ sexo , data = auditdf)
+
+# subset
+
