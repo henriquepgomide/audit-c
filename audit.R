@@ -1,10 +1,8 @@
 #  IRT
 ## libraries ----
-library(psych)
-library(ltm)
-library(RColorBrewer)
-library(car)
-library(lattice)
+libs <- c('psych', 'ltm', 'RColorBrewer', 'car', 
+          'lattice', 'mirt')
+lapply(libs, require, character.only = T)
 
 # Import data ----
 auditdf  <- read.csv("audit.csv", header=TRUE, na.strings = c("NA",""), strip.white = TRUE)
@@ -43,16 +41,29 @@ summary(auditdf$idade)
 boxplot(idade ~ sexo , data = auditdf) # by sexo
 boxplot(idade ~ clas , data = auditdf) # by clas
 boxplot(idade ~ servico , data = auditdf) # by servico
+bwplot(~idade|sexo*servico, data = auditdf)
 
 # servico
 table(auditdf$servico)
 
 # Audit classification
 table(auditdf$clas)
+bwplot(~result|sexo*servico, data = auditdf)
 
 # Item Response Theory - Graded Model ----
-## correlation matrix
-rcor.test(auditdf[6:15], method = "kendall")
+
+## Descriptives
+describe(auditdf[6:15], )
+
+### correlation matrix
+round(cor(auditdf[6:15], method="kendal", use="complete.obs"),2) # kendall correlation coef among audit items
+
+### Cronbach's alpha
+alpha(auditdf[6:15]) # Cronbach's alpha
+by(auditdf[6:15], auditdf$servico, alpha) # Cronbach's by service
+
+VSS(auditdf[6:15], rotate="varimax")
+
 
 # IRT
 auditdf[6:15]  <- lapply(auditdf[6:15], as.factor) # transformating audit vars as factor for grm 
