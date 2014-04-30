@@ -4,6 +4,7 @@
 libs <- c('psych', 'ltm', 'RColorBrewer', 'car',
           'lattice', 'mirt')
 lapply(libs, require, character.only = T)
+rm(libs)
 
 # Import data ----
 auditdf <- read.csv("audit.csv", header=TRUE, na.strings = c("NA",""), strip.white = TRUE)
@@ -20,7 +21,7 @@ auditdf$feriment[auditdf$feriment == 1] <- NA # fixing errors
 auditdf$parbeber[auditdf$parbeber > 4 | auditdf$parbeber == 1 | auditdf$parbeber == 3] <- NA # fixing errors
 auditdf$sexo[auditdf$sexo == 0] <- NA # Inserting NA
 auditdf$sexo <- factor(auditdf$sexo, labels=c("Male","Female"))
-auditdf$servico <- factor(auditdf$servico, labels=c("UBS","Polícia", "Bombeiros", "Estudantes"))
+auditdf$servico <- factor(auditdf$servico, labels=c("UBS","Policeman", "Firefighter", "Estudantes"))
 
 ## Compute audit score
 auditdf$result <- auditdf$freq + auditdf$doses + auditdf$fr5doses + auditdf$nconspar + auditdf$nconsfaz + auditdf$bebmanha + auditdf$culpado + auditdf$nlembrou + auditdf$feriment + auditdf$parbeber # computing audit values
@@ -54,7 +55,7 @@ bwplot(~result|sexo*servico, data = auditdf)
 # Item Response Theory - Graded Model ----
 
 ## Descriptives
-describe(auditdf[6:15], )
+describe(auditdf[6:15])
 
 ### correlation matrix
 round(cor(auditdf[6:15], method="kendal", use="complete.obs"),2) # kendall correlation coef among audit items
@@ -63,14 +64,31 @@ round(cor(auditdf[6:15], method="kendal", use="complete.obs"),2) # kendall corre
 alpha(auditdf[6:15]) # Cronbach's alpha
 by(auditdf[6:15], auditdf$servico, alpha) # Cronbach's by service
 
-VSS(auditdf[6:15], rotate="varimax")
+### Exploratory factor analysis
+#### 1 Factor
+m1f  <- mirt(auditdf[6:15], 1, rotate="oblimin")
+summary(m1f)
+residuals(m1f)
 
+#### 2 Factor
+m2f  <- mirt(auditdf[6:15], 2, rotate="oblimin")
+summary(m2f, rotate="oblimin")
+residuals(m2f)
 
-# IRT
-auditdf[6:15] <- lapply(auditdf[6:15], as.factor) # transformating audit vars as factor for grm
+#### Compare models
+anova(m1f, m2f)
+
+### Bifactor Model
+factors  <- c(2,2,2,1,1,1,1,1,1,1)
+mbi  <- bfactor(auditdf[6:15], factors)
+summary(mbi, rotate="oblimin")
+residuals(mbi)
+
+## LTM
+auditdf[6:15] <- lapply(auditdf[6:15], as.factor) # transform audit vars as factor for grm
 
 #irt
-str(auditdf) # checking transformation - it seems ok.
+#str(auditdf) # checking transformation - it seems ok.
 
 # Comparing models - one parameter (theta) vs. 2 parameter (theta and discrimination)
 # Creating models
