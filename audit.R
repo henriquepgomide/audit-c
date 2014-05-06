@@ -65,26 +65,14 @@ alpha(auditdf[6:15]) # Cronbach's alpha
 by(auditdf[6:15], auditdf$servico, alpha) # Cronbach's by service
 
 ### Exploratory factor analysis
-#### 1 Factor
-m1f  <- mirt(auditdf[6:15], 1, rotate="oblimin")
-summary(m1f)
-residuals(m1f)
-
-#### 2 Factor
-m2f  <- mirt(auditdf[6:15], 2, rotate="oblimin")
-summary(m2f, rotate="oblimin")
-residuals(m2f)
-
-#### Compare models
-anova(m1f, m2f)
-
 ### Bifactor Model
 factors  <- c(2,2,2,1,1,1,1,1,1,1)
 mbi  <- bfactor(auditdf[6:15], factors)
-summary(mbi, rotate="oblimin")
+summary(mbi)
+mbi$
 residuals(mbi)
 
-## LTM
+## GRM
 auditdf[6:15] <- lapply(auditdf[6:15], as.factor) # transform audit vars as factor for grm
 
 #irt
