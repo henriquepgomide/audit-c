@@ -91,6 +91,7 @@ summary(audit1par)
 coef(audit1par)
 plot(audit1par)
 
+
 # information
 information(audit1par, c(-4,4)) # all items - Total info = 55.92
 information(audit1par, c(-4,4), c(1,2,3)) # shortaudit - Total info = 20.99, which means (20.94/55.87) .374 of the total. This result is quite similar to Strauss and Rindstoff ~.40.
